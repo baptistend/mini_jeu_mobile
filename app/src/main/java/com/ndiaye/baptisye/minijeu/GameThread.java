@@ -6,12 +6,14 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 
+import java.util.Random;
+
 public class GameThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private boolean running;
     private Handler handler = new Handler();
-
+    private Random random;
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
         this.surfaceHolder = surfaceHolder;
@@ -21,7 +23,7 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         // Utilisation du postDelayed pour mettre à jour l'état toutes les 100ms
-        /*
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -32,10 +34,7 @@ public class GameThread extends Thread {
                         canvas = surfaceHolder.lockCanvas();
                         synchronized (surfaceHolder) {
                             if (canvas != null) {
-                                gameView.update();
-                                Paint paint = new Paint();
-                                paint.setColor(Color.rgb(250, 0, 0));
-                                canvas.drawRect(0, 0, 20, 200,paint );
+                                //TODO
                             }
                         }
                     } catch (Exception e) {
@@ -55,11 +54,10 @@ public class GameThread extends Thread {
                 }
             }
         }, 100);
-*/
-        // Boucle principale de jeu, qui s'exécute toutes les 60ms
+
         while (running) {
             try {
-                sleep(60);  // Pause pour simuler une fréquence d'image (environ 60 FPS)
+                sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

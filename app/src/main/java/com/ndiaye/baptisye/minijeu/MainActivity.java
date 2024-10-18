@@ -7,35 +7,31 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
+
+    public static final String PREFS_NAME = "game_preferences";
+    public static final String TOTAL_GAMES_KEY = "total_games_played";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPref =
-                this.getPreferences(Context.MODE_PRIVATE);
 
-        int valeur_y = sharedPref.getInt("valeur_y", 0);
-        valeur_y = (valeur_y + 100) % 400;
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("valeur_y", valeur_y);
-        int nb_play = sharedPref.getInt("nb_play", 0);
-        nb_play ++;
-        editor.putInt("nb_play", nb_play);
-        editor.apply();
-        Log.w("nbPlay ", String.valueOf(nb_play));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        int totalGamesPlayed = sharedPref.getInt(TOTAL_GAMES_KEY, 0);
+
+        totalGamesPlayed++;
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(TOTAL_GAMES_KEY, totalGamesPlayed);
+        editor.apply();
+
+        Toast.makeText(this, "Total games played: " + totalGamesPlayed, Toast.LENGTH_LONG).show();
+
         setContentView(new GameView(this));
-
     }
-
 }
