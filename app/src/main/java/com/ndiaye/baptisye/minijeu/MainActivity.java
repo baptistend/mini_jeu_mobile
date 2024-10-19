@@ -1,19 +1,21 @@
 package com.ndiaye.baptisye.minijeu;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
     public static final String PREFS_NAME = "game_preferences";
     public static final String TOTAL_GAMES_KEY = "total_games_played";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,4 +36,5 @@ public class MainActivity extends Activity {
 
         setContentView(new GameView(this));
     }
+
 }

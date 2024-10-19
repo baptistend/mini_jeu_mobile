@@ -35,6 +35,7 @@ public class GameThread extends Thread {
                         synchronized (surfaceHolder) {
                             if (canvas != null) {
                                 //TODO
+                                gameView.startVoiceRecognition();
                             }
                         }
                     } catch (Exception e) {
@@ -50,10 +51,10 @@ public class GameThread extends Thread {
                         }
                     }
                     // Replanifie l'exécution après 100 ms
-                    handler.postDelayed(this, 100);
+                    handler.postDelayed(this, 1500);
                 }
             }
-        }, 100);
+        }, 1500);
 
         while (running) {
             try {
