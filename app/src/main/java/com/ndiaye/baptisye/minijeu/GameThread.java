@@ -36,6 +36,8 @@ public class GameThread extends Thread {
                             if (canvas != null) {
                                 //TODO
                                 gameView.startVoiceRecognition();
+                                gameView.update();  // Met à jour l'état du jeu
+
                             }
                         }
                     } catch (Exception e) {
@@ -51,10 +53,10 @@ public class GameThread extends Thread {
                         }
                     }
                     // Replanifie l'exécution après 100 ms
-                    handler.postDelayed(this, 1500);
+                    handler.postDelayed(this, 500);
                 }
             }
-        }, 1500);
+        }, 500);
 
         while (running) {
             try {

@@ -45,10 +45,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private long startTime; // Temps de début de la partie
     private long elapsedTime;
     private Direction current_direction;
-    private float SPEED = 5f; // Vitesse  pour le mouvement
+    private float PREVIOUS_SPEED = 5f; // Vitesse  pour le mouvement
+    private float CURRENT_SPEED = 5f; // Vitesse  pour le mouvement
+
     private SpeechRecognizer speechRecognizer;
     public boolean isRecognizing = false;
     private Bitmap bitmap; // Pour stocker l'image à dessiner
+    private int ballColor = Color.rgb(255,0,0);
+    private final float NORMAL_SPEED = 5f;
     private SurfaceHolder surfaceHolder;
     public GameView(Context context) {
         super(context);
@@ -102,6 +106,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             public void onError(int error) {
                 isRecognizing = false;
                 updateImageView();
+                processVoiceCommand(Virelangues.trouverNiveauVirelangue("serge cherche à changer son siège"));
+
             }
 
             @Override
@@ -149,29 +155,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
            case -1:
                break;
            case 0:
-               SPEED /= 2;
-               break;
            case 1:
-               SPEED /= 3;
-               break;
+               PREVIOUS_SPEED = CURRENT_SPEED;
 
+               CURRENT_SPEED *= 0.75F;
+               break;
            case 2:
-               SPEED /= 4;
-               break;
-
            case 3:
-               SPEED /=5;
+               PREVIOUS_SPEED = CURRENT_SPEED;
+
+               CURRENT_SPEED *= 0.5F;
                break;
 
            case 4:
-               SPEED /=6;
-               break;
            case 5:
-               SPEED /=7;
+               PREVIOUS_SPEED = CURRENT_SPEED;
+               CURRENT_SPEED *= 0.25F;
                break;
+
+
 
 
         }
+
+            ballColor = Color.rgb(0,255,0);
+
+
     }
 
     // Méthode pour changer la direction en fonction d'une commande
@@ -179,18 +188,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         switch (direction) {
             case NORTH:
                 directionX = 0;
-                directionY = -SPEED;
+                directionY = -CURRENT_SPEED;
                 break;
             case EAST:
-                directionX = SPEED;
+                directionX = CURRENT_SPEED;
                 directionY = 0;
                 break;
             case SOUTH:
                 directionX = 0;
-                directionY = SPEED;
+                directionY = CURRENT_SPEED;
                 break;
             case WEST:
-                directionX = -SPEED;
+                directionX = -CURRENT_SPEED;
                 directionY = 0;
                 break;
         }
@@ -206,8 +215,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         current_direction = newDirection;
         changeDirection(newDirection);
-
-        SPEED += 2;
+        PREVIOUS_SPEED = CURRENT_SPEED;
+        CURRENT_SPEED *= 1.25F;
     }
 
     public void initCoordinates() {
@@ -220,7 +229,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         x = 0;
         directionX = 0; // Vitesse directionnelle sur l'axe X
         directionY = 0;
-        SPEED = 5F;
+        CURRENT_SPEED = 5F;
+        PREVIOUS_SPEED = 5F;
+
     }
 
     @Override
@@ -241,9 +252,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
 
+            Log.w("SPEED", String.valueOf(CURRENT_SPEED));
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
-            paint.setColor(Color.rgb(250, 0, 0));
+            paint.setColor(ballColor);
             float radius = 50f;
             boolean isAtEdge = xCenter + x - radius <= 0 || xCenter + x + radius >= getWidth();
 
@@ -296,8 +308,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
         x += directionX;
         y += directionY;
+        if (CURRENT_SPEED >= PREVIOUS_SPEED) {
+            ballColor = Color.rgb(255, 0, 0); // Changer la couleur en rouge si la vitesse est supérieure à la vitesse normale
+        }
+        else{
+            ballColor = Color.rgb(0,255, 0);
+        }
         elapsedTime = System.currentTimeMillis() - startTime;
-
         if (xCenter + x < 0 || xCenter + x > getWidth()) {
             directionX *= -1;
         }
