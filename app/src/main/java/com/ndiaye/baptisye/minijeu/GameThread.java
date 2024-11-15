@@ -11,7 +11,7 @@ import java.util.Random;
 public class GameThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
-    private boolean running;
+    public boolean running;
     private Handler handler = new Handler();
     private Random random;
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
@@ -33,10 +33,10 @@ public class GameThread extends Thread {
 
                         canvas = surfaceHolder.lockCanvas();
                         synchronized (surfaceHolder) {
-                            if (canvas != null) {
+                            if (canvas != null && running) {
                                 //TODO
                                 gameView.startVoiceRecognition();
-                                gameView.update();  // Met à jour l'état du jeu
+                                gameView.update();
 
                             }
                         }
