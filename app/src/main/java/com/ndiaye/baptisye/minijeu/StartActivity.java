@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class StartActivity extends Activity {
+public class StartActivity extends Activity  {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
 
@@ -51,4 +51,6 @@ public class StartActivity extends Activity {
             finish();
         }
     }
+
+
 }

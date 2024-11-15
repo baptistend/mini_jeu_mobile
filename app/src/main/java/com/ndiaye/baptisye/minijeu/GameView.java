@@ -172,16 +172,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                PREVIOUS_SPEED = CURRENT_SPEED;
                CURRENT_SPEED *= 0.25F;
                break;
-
-
-
-
         }
 
             ballColor = Color.rgb(0,255,0);
 
 
     }
+
+    public void decreaseSpeed() {
+        if(!(directionX==0 && directionY==0 && CURRENT_SPEED==5F)){
+            if(CURRENT_SPEED>4F){
+                CURRENT_SPEED *= 0.9F;
+                changeDirection(current_direction);
+                Toast.makeText(getContext(), "Jolie secousse, vitesse réduite !", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getContext(), "Trop facile ! Ta vitesse est faible rééssaye plus tard", Toast.LENGTH_SHORT).show();
+            }
+         }
+    }
+
 
     // Méthode pour changer la direction en fonction d'une commande
     private void changeDirection(Direction direction) {
@@ -252,7 +261,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
 
-            Log.w("SPEED", String.valueOf(CURRENT_SPEED));
+            //Log.w("SPEED", String.valueOf(CURRENT_SPEED));
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
             paint.setColor(ballColor);
