@@ -106,7 +106,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             public void onError(int error) {
                 isRecognizing = false;
                 updateImageView();
-                processVoiceCommand(Virelangues.trouverNiveauVirelangue("serge cherche à changer son siège"));
 
             }
 
@@ -151,34 +150,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // Méthode pour traiter les commandes vocales
     private void processVoiceCommand(Integer command) {
+        Log.w("command ", "" + command);
        switch (command){
            case -1:
+               ballColor = Color.rgb(255,0,0);
+
                break;
            case 0:
            case 1:
                PREVIOUS_SPEED = CURRENT_SPEED;
 
                CURRENT_SPEED *= 0.75F;
+               ballColor = Color.rgb(0,0,255);
+
                break;
            case 2:
            case 3:
                PREVIOUS_SPEED = CURRENT_SPEED;
-
                CURRENT_SPEED *= 0.5F;
+               ballColor = Color.rgb(0,0,255);
+
                break;
 
            case 4:
            case 5:
                PREVIOUS_SPEED = CURRENT_SPEED;
                CURRENT_SPEED *= 0.25F;
+               ballColor = Color.rgb(0,0,255);
+
                break;
-
-
-
 
         }
 
-            ballColor = Color.rgb(0,255,0);
 
 
     }
@@ -220,6 +223,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void initCoordinates() {
+
         SharedPreferences sharedPref = getContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE);
         startTime = System.currentTimeMillis(); // Initialiser le temps de début
 
@@ -266,7 +270,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (isAtEdge) {
                 elapsedTime = System.currentTimeMillis() - startTime; // Temps écoulé en millisecondes
                 long elapsedTimeInSeconds = elapsedTime / 1000;
-
                 post(() -> {
                     Toast.makeText(getContext(), "Vous avez perdu ! Temps de jeu : " + elapsedTimeInSeconds + " secondes", Toast.LENGTH_SHORT).show();
                 });
@@ -326,6 +329,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
             changeDirection();
             return true;
         }
