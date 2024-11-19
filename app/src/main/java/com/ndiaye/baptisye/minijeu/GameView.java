@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.icu.text.SimpleDateFormat;
 import android.media.Image;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -21,6 +22,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -56,11 +59,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder surfaceHolder;
     public GameView(Context context) {
         super(context);
+
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.micro_on); // Remplacez par votre image
         initSpeechRecognizer(context); // Initialiser le recognizer vocal
 
         thread = new GameThread(getHolder(), this);
         SharedPreferences sharedPref = getContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE);
+
         y = sharedPref.getInt(MainActivity.TOTAL_GAMES_KEY, 100);
         yCenter = getHeight() / 2;
         xCenter = getWidth() / 2;
@@ -69,6 +74,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         setFocusable(true);
         getHolder().addCallback(this);
+
     }
     private void updateImageView() {
 
@@ -279,13 +285,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (isAtEdge) {
-                elapsedTime = System.currentTimeMillis() - startTime; // Temps écoulé en millisecondes
-                long elapsedTimeInSeconds = elapsedTime / 1000;
 
-                post(() -> {
-                    Toast.makeText(getContext(), "Vous avez perdu ! Temps de jeu : " + elapsedTimeInSeconds + " secondes", Toast.LENGTH_SHORT).show();
-                });
-                initCoordinates();
+                //handle Lose
+                handleLose();
+
             }
 
             canvas.drawCircle(xCenter + x, yCenter + y, radius, paint);
@@ -305,6 +308,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
     }
+
+    private void handleLose() {
+        // Récupérer les SharedPreferences
+        SharedPreferences sharedPref = getContext().getSharedPreferences(ResultActivity.RESULTS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        // Calculer le temps écoulé
+        elapsedTime = System.currentTimeMillis() - startTime;
+        long elapsedTimeInSeconds = elapsedTime / 1000;
+
+        // Obtenir la date actuelle
+        Date time = new Date();
+        String formattedTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(time);
+
+        // Préparer la donnée à stocker
+        String dataToStore = formattedTime + " | Temps : " + elapsedTimeInSeconds + " secondes";
+
+        // Récupérer les anciennes données, si elles existent, et les concaténer
+        String existingResults = sharedPref.getString("results", "");
+        if (!existingResults.isEmpty()) {
+            dataToStore = existingResults + "\n" + dataToStore;  // Ajouter la nouvelle donnée à l'existante
+        }
+
+        // Sauvegarder les nouvelles données dans SharedPreferences
+        editor.putString("results", dataToStore);
+        editor.apply();
+
+        // Afficher un message de Toast
+        post(() -> {
+            Toast.makeText(getContext(), "Vous avez perdu ! Temps de jeu : " + elapsedTimeInSeconds + " secondes", Toast.LENGTH_SHORT).show();
+        });
+
+        // Initialiser les coordonnées
+        initCoordinates();
+    }
+
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {

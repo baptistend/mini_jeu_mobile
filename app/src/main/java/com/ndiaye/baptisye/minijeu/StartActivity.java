@@ -25,6 +25,7 @@ public class StartActivity extends Activity  {
 
         // Configuration du bouton de démarrage du jeu
         Button startButton = findViewById(R.id.startButton);
+        Button resultsButton = findViewById(R.id.resultsButton);
         startButton.setOnClickListener(v -> {
             // Vérifier si la permission a été accordée avant de démarrer le jeu
             if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
@@ -35,6 +36,10 @@ public class StartActivity extends Activity  {
             } else {
                 Toast.makeText(StartActivity.this, "La permission d'enregistrement audio est requise.", Toast.LENGTH_SHORT).show();
             }
+        });
+        resultsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StartActivity.this, ResultActivity.class);
+            startActivity(intent);
         });
     }
 

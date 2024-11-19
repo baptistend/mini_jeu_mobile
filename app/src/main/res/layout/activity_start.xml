@@ -10,8 +10,8 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="239dp"
-        android:layout_height="112dp"
+        android:layout_width="203dp"
+        android:layout_height="76dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="20dp"
         android:text="Welcome to the Ball Game!"
@@ -29,11 +29,12 @@
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="40dp"
         android:text="Start Game"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.122"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -98,6 +99,18 @@
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <Button
+        android:id="@+id/resultsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="20dp"
+        android:text="Results"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/startButton"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

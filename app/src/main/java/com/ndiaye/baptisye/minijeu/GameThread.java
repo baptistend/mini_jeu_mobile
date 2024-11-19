@@ -34,7 +34,7 @@ public class GameThread extends Thread {
                         canvas = surfaceHolder.lockCanvas();
                         synchronized (surfaceHolder) {
                             if (canvas != null && running) {
-                                //TODO
+
                                 gameView.startVoiceRecognition();
                                 gameView.update();
 

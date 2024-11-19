@@ -2,6 +2,7 @@ package com.ndiaye.baptisye.minijeu;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 
@@ -34,7 +37,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        setContentView(R.layout.activity_main);
         // Gérer le nombre total de jeux joués à partir des SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         int totalGamesPlayed = sharedPref.getInt(TOTAL_GAMES_KEY, 0);
@@ -63,7 +66,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         // Définir la vue du jeu (GameView)
         gameView = new GameView(this);  // Instanciation directe de GameView
-        setContentView(gameView);  // Affecter la vue GameView à l'écran
+        Button goHome =  findViewById(R.id.goHome);
+        goHome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StartActivity.class);
+            this.startActivity(intent);
+        });
+        FrameLayout gameContainer = findViewById(R.id.gameContainer);
+        gameView = new GameView(this); // Instanciation de GameView
+        gameContainer.addView(gameView);
     }
 
     @Override
