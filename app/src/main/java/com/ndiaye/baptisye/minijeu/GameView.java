@@ -1,5 +1,6 @@
 package com.ndiaye.baptisye.minijeu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.media.Image;
 import android.os.Bundle;
@@ -53,14 +56,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SpeechRecognizer speechRecognizer;
     public boolean isRecognizing = false;
-    private Bitmap bitmap; // Pour stocker l'image à dessiner
+
     private int ballColor = Color.rgb(255,0,0);
     private final float NORMAL_SPEED = 5f;
-    private SurfaceHolder surfaceHolder;
     public GameView(Context context) {
         super(context);
 
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.micro_on); // Remplacez par votre image
+
         initSpeechRecognizer(context); // Initialiser le recognizer vocal
 
         thread = new GameThread(getHolder(), this);
@@ -70,22 +72,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         yCenter = getHeight() / 2;
         xCenter = getWidth() / 2;
         random = new Random();
-        changeDirection(); // Initialiser avec une direction aléatoire
+        changeDirection();
 
         setFocusable(true);
         getHolder().addCallback(this);
 
     }
-    private void updateImageView() {
 
-        if (isRecognizing) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.micro_on); // Remplacez par votre image
-            // Mettez l'image pour "reconnaissance"
-        } else {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.micro_off); // Remplacez par votre image
-            // Mettez l'image par défaut
-        }
-    }
     // Méthode pour initialiser le SpeechRecognizer
     private void initSpeechRecognizer(Context c) {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(c);
@@ -93,7 +86,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void onReadyForSpeech(Bundle params) {
                 isRecognizing = true;
-                updateImageView();
             }
 
             @Override
@@ -111,7 +103,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void onError(int error) {
                 isRecognizing = false;
-                updateImageView();
 
             }
 
@@ -125,7 +116,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 isRecognizing = false;
-                updateImageView();
                 speechRecognizer.stopListening();
 
             }
@@ -167,6 +157,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                CURRENT_SPEED *= 0.75F;
                ballColor = Color.rgb(0,0,255);
+               Toast.makeText(getContext(), "Virelangue trouvé ! Ralentissement de la balle ...", Toast.LENGTH_SHORT).show();
 
                break;
            case 2:
@@ -175,6 +166,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                CURRENT_SPEED *= 0.5F;
                ballColor = Color.rgb(0,0,255);
+               Toast.makeText(getContext(), "Virelangue trouvé ! Ralentissement de la balle ...", Toast.LENGTH_SHORT).show();
 
                break;
 
@@ -183,6 +175,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                PREVIOUS_SPEED = CURRENT_SPEED;
                CURRENT_SPEED *= 0.25F;
                ballColor = Color.rgb(0,0,255);
+               Toast.makeText(getContext(), "Virelangue trouvé ! Ralentissement de la balle ...", Toast.LENGTH_SHORT).show();
 
                break;
 
@@ -274,13 +267,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
 
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.LTGRAY);
             Paint paint = new Paint();
             paint.setColor(ballColor);
             float radius = 50f;
+            int width = getWidth();
+            int imageWidth = 24; // largeur de l'image
+            int imageHeight = 26; // hauteur de l'image
+
+            // Calculer les coordonnées pour centrer l'image horizontalement
+            int left = (width - imageWidth) / 2;
+            int top = 0; // positionner en haut
+            int bottom = top + imageHeight; // calculer la hauteur
             boolean isAtEdge = xCenter + x - radius <= 0 || xCenter + x + radius >= getWidth();
 
-            if (yCenter + y - radius <= 0 || yCenter + y + radius >= getHeight()) {
+            if (yCenter + y -bottom- radius <= 0 || yCenter + y + radius >= getHeight()) {
                 isAtEdge = true;
             }
 
@@ -292,20 +293,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             canvas.drawCircle(xCenter + x, yCenter + y, radius, paint);
-            if (bitmap != null) {
-                // Calculer la position pour centrer l'image en haut
-                int width = getWidth();
-                int height = getHeight();
-                int imageWidth = 24;
-                int imageHeight = 24;
 
-                // Calculer les coordonnées pour centrer l'image horizontalement
-                int left = (width - imageWidth) / 2;
-                int top = 0; // positionner en haut
-                // Dessiner l'image sur le canvas
-
-                canvas.drawBitmap(bitmap, left, top, null);
-            }
         }
     }
 
