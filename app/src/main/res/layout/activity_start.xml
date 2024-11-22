@@ -15,7 +15,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginBottom="20dp"
         android:text="Welcome to the Ball Game!"
-        android:textColor="@android:color/black"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
